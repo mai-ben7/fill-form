@@ -41,7 +41,7 @@ function checkRateLimit(ip: string): boolean {
 }
 
 // Send webhook function
-async function sendWebhook(data: any) {
+async function sendWebhook(data: z.infer<typeof leadFormSchema>) {
   const webhookUrl = process.env.LEAD_WEBHOOK_URL;
   if (!webhookUrl) return;
 
@@ -67,7 +67,7 @@ async function sendWebhook(data: any) {
 }
 
 // Send email function
-async function sendEmail(data: any) {
+async function sendEmail(data: z.infer<typeof leadFormSchema>) {
   const smtpHost = process.env.SMTP_HOST;
   const smtpPort = Number(process.env.SMTP_PORT || 587);
   const smtpUser = process.env.SMTP_USER;

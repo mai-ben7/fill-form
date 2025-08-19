@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -21,7 +21,7 @@ const leadFormSchema = z.object({
 
 type LeadFormData = z.infer<typeof leadFormSchema>;
 
-export default function Home() {
+function ContactForm() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitSuccess, setSubmitSuccess] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
@@ -93,13 +93,7 @@ export default function Home() {
       if (result.ok) {
         setSubmitSuccess(true);
         
-        // Analytics event
-        if (typeof window !== 'undefined' && (window as any).gtag) {
-          (window as any).gtag('event', 'lead_submit', {
-            form_id: 'qr_lead',
-            page_path: window.location.pathname + window.location.search
-          });
-        }
+
 
         // Redirect after 2 seconds
         setTimeout(() => {
@@ -108,7 +102,7 @@ export default function Home() {
       } else {
         setSubmitError(result.error || 'שגיאה בשליחת הטופס');
       }
-    } catch (error) {
+    } catch {
       setSubmitError('שגיאה בחיבור לשרת');
     } finally {
       setIsSubmitting(false);
@@ -414,5 +408,20 @@ export default function Home() {
         </div>
       </footer>
     </div>
+  );
+}
+
+export default function Home() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+          <p className="text-gray-600">טוען...</p>
+        </div>
+      </div>
+    }>
+      <ContactForm />
+    </Suspense>
   );
 }
