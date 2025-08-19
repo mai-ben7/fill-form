@@ -138,6 +138,15 @@ async function sendEmail(data: z.infer<typeof leadFormSchema>) {
 }
 
 export async function POST(request: NextRequest) {
+  // Debug: Log all environment variables
+  console.log('=== ENVIRONMENT VARIABLES DEBUG ===');
+  console.log('SMTP_HOST:', process.env.SMTP_HOST);
+  console.log('SMTP_PORT:', process.env.SMTP_PORT);
+  console.log('SMTP_USER:', process.env.SMTP_USER);
+  console.log('SMTP_PASS:', process.env.SMTP_PASS ? '***' : 'missing');
+  console.log('LEAD_TO_EMAIL:', process.env.LEAD_TO_EMAIL);
+  console.log('=====================================');
+  
   try {
     // Get client IP for rate limiting
     const ip = request.headers.get('x-forwarded-for') || request.headers.get('x-real-ip') || 'unknown';
